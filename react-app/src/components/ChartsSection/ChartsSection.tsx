@@ -3,43 +3,49 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearSca
 import { Doughnut, Bar } from 'react-chartjs-2';
 import type { ChartData } from '../../types';
 import './ChartsSection.css';
+import { cn } from '../../utils/utils';
 
 // Register Chart.js components
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement);
 
 interface ChartsSectionProps {
-  chartData: ChartData | null;
+  chartData: ChartData;
   isFile4Uploaded: boolean;
 }
 
-const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData, isFile4Uploaded }) => {
-  if (!chartData) {
-    return (
-      <div id="charts-container">
-        <div className="chart-overlay">
-          <p>Please upload and compare files to see charts.</p>
-        </div>
-      </div>
-    );
-  }
+const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData = {
+  totalFeatures: 0,
+  sameCount: 0,
+  partialCount: 0,
+  diffCount: 0,
+  missingCellCount: 0,
+  diff2Percent: '0%',
+  diff3Percent: '0%',
+  diff4Percent: '0%',
+}, isFile4Uploaded }) => {
 
   const doughnutData = {
     labels: ['Same', 'Partial', 'Different'],
     datasets: [
       {
-        data: [chartData.sameCount, chartData.partialCount, chartData.diffCount],
+        data: [chartData?.sameCount, chartData?.partialCount, chartData?.diffCount],
         backgroundColor: ['#66BB6A', '#FFEE58', '#FFA726'],
       },
     ],
   };
 
+  // Conditionally build bar chart data based on uploaded files
   const barData = {
-    labels: ['File2', 'File3', 'File4'],
+    labels: isFile4Uploaded ? ['File2', 'File3', 'File4'] : ['File2', 'File3'],
     datasets: [
       {
         label: '% Different vs File1',
-        data: [chartData.diff2Percent, chartData.diff3Percent, chartData.diff4Percent],
-        backgroundColor: ['#42A5F5', '#AB47BC', '#EC407A'],
+        data: isFile4Uploaded 
+          ? [chartData?.diff2Percent, chartData?.diff3Percent, chartData?.diff4Percent]
+          : [chartData?.diff2Percent, chartData?.diff3Percent],
+        backgroundColor: isFile4Uploaded 
+          ? ['#42A5F5', '#AB47BC', '#EC407A']
+          : ['#42A5F5', '#AB47BC'],
       },
     ],
   };
@@ -67,7 +73,12 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData, isFile4Uploade
   };
 
   return (
-    <div id="charts-container">
+    <div id="charts-container" className={cn(!chartData && "py-4")}>
+
+      {!chartData && <div className="chart-overlay">
+           <p>Please upload and compare files to see charts.</p>
+         </div>}
+
       <div className="chart-wrapper">
         <Doughnut data={doughnutData} options={doughnutOptions} />
       </div>
