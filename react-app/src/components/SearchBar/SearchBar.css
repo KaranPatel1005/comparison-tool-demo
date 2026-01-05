@@ -1,0 +1,38 @@
+.controls-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.search-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.search-wrapper label {
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.search-wrapper input {
+  padding: 8px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  transition: border-color 0.3s;
+  min-width: 250px;
+}
+
+.search-wrapper input:focus {
+  border-color: #007aff;
+  outline: none;
+}
+
+.dark-mode .search-wrapper input {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ccc;
+  border-color: #555;
+}

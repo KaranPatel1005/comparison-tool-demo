@@ -1,0 +1,119 @@
+.selected-car-title {
+  text-align: center;
+  margin: 10px 0;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+#table-scale-container {
+  overflow: auto;
+  transform-origin: top center;
+  transition: transform 0.3s ease;
+}
+
+.table-container {
+  min-width: 700px;
+  max-height: 60vh;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  overflow: auto;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: transparent;
+  font-size: 1rem;
+}
+
+th,
+td {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 12px;
+  text-align: center;
+  font-size: 0.9rem;
+  position: relative;
+}
+
+th {
+  background-color: rgba(255, 255, 255, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  font-weight: bold;
+}
+
+/* Color classes for table cells */
+td.green {
+  background-color: #c8e6c9 !important;
+}
+
+td.yellow {
+  background-color: #fff59d !important;
+}
+
+td.red {
+  background-color: #ffccbc !important;
+}
+
+td.blue {
+  background-color: #bbdefb !important;
+}
+
+/* Dark mode color overrides */
+.dark-mode td.green {
+  background-color: #406546 !important;
+}
+
+.dark-mode td.yellow {
+  background-color: #7e7130 !important;
+}
+
+.dark-mode td.red {
+  background-color: #8d4333 !important;
+}
+
+.dark-mode td.blue {
+  background-color: #2f4f6f !important;
+}
+
+/* Input styling */
+td input[type='text'] {
+  width: 90%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  text-align: center;
+  font-size: 0.9rem;
+  background-color: rgba(255, 255, 255, 0.6);
+  transition: border-color 0.3s;
+}
+
+td input[type='text']:focus {
+  border-color: #007aff;
+  outline: none;
+}
+
+.dark-mode table {
+  background-color: transparent;
+  color: #ccc;
+}
+
+.dark-mode th {
+  background-color: rgba(68, 68, 68, 0.7) !important;
+  color: #fff;
+}
+
+.dark-mode td {
+  color: #ccc;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark-mode td input[type='text'] {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ccc;
+}

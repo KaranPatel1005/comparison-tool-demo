@@ -1,0 +1,48 @@
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.header-row h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.dark-mode .header-row h1 {
+  color: #fff;
+}
+
+.toggle-dark-mode {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.toggle-dark-mode input {
+  transform: scale(1.2);
+  cursor: pointer;
+}
+
+.dark-mode .toggle-dark-mode label {
+  color: #ccc;
+}
+
+.help-btn {
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.help-btn:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}

@@ -1,0 +1,23 @@
+.kpi-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.kpi-box {
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  padding: 10px 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-weight: 500;
+}
+
+.dark-mode .kpi-box {
+  background-color: rgba(58, 58, 58, 0.5);
+  color: #fff;
+}

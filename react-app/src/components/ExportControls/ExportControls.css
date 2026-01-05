@@ -1,0 +1,20 @@
+.export-controls {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.export-btn {
+  background: linear-gradient(135deg, #7c4dff 0%, #651fff 100%);
+  padding: 12px 18px;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 8px;
+  font-weight: bold;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+
+.export-btn:hover {
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.2);
+}
