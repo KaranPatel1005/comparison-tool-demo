@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import type { RowData } from '../../types';
+import type { LegendFilter } from '../Legend/Legend';
 import './DataTable.css';
 
 interface DataTableProps {
@@ -10,6 +11,7 @@ interface DataTableProps {
   onFinalValueChange: (feature: string, value: string) => void;
   onCellValueChange: (feature: string, fileIndex: number, value: string) => void;
   searchValue: string;
+  legendFilter: LegendFilter;
 }
 
 const DataTable: React.FC<DataTableProps> = ({
@@ -20,25 +22,43 @@ const DataTable: React.FC<DataTableProps> = ({
   onFinalValueChange,
   onCellValueChange,
   searchValue,
+  legendFilter,
 }) => {
-  // Filter rows based on search
+  // Filter rows based on search AND legend filter
   const filteredRows = useMemo(() => {
-    if (!searchValue) return rows;
+    let filtered = rows;
 
-    const lowerSearch = searchValue.toLowerCase();
-    return rows.filter((row) => {
-      // Search in feature name
-      if (row.feature.toLowerCase().includes(lowerSearch)) return true;
+    // Apply legend filter
+    if (legendFilter !== 'all') {
+      filtered = filtered.filter((row) => {
+        // For blue filter, check if any value is empty
+        if (legendFilter === 'blue') {
+          return row.values.some((val) => val === '');
+        }
+        // For other filters, match the color class
+        return row.colorClass === legendFilter;
+      });
+    }
 
-      // Search in all values
-      if (row.values.some((val) => val.toLowerCase().includes(lowerSearch))) return true;
+    // Apply search filter
+    if (searchValue) {
+      const lowerSearch = searchValue.toLowerCase();
+      filtered = filtered.filter((row) => {
+        // Search in feature name
+        if (row.feature.toLowerCase().includes(lowerSearch)) return true;
 
-      // Search in final value
-      if (row.finalValue.toLowerCase().includes(lowerSearch)) return true;
+        // Search in all values
+        if (row.values.some((val) => val.toLowerCase().includes(lowerSearch))) return true;
 
-      return false;
-    });
-  }, [rows, searchValue]);
+        // Search in final value
+        if (row.finalValue.toLowerCase().includes(lowerSearch)) return true;
+
+        return false;
+      });
+    }
+
+    return filtered;
+  }, [rows, searchValue, legendFilter]);
 
   if (!carName) {
     return null;
@@ -47,6 +67,21 @@ const DataTable: React.FC<DataTableProps> = ({
   return (
     <>
       <div className="selected-car-title">{carName}</div>
+      {(legendFilter !== 'all' || searchValue) && (
+        <div className="filter-status">
+          Showing {filteredRows.length} of {rows.length} features
+          {legendFilter !== 'all' && (
+            <span className="filter-badge">
+              Filter: {legendFilter === 'green' ? 'All Match' : legendFilter === 'yellow' ? 'Partial' : legendFilter === 'red' ? 'Different' : 'Empty'}
+            </span>
+          )}
+          {searchValue && (
+            <span className="filter-badge">
+              Search: "{searchValue}"
+            </span>
+          )}
+        </div>
+      )}
       <div id="table-scale-container">
         <div className="table-container">
           <table id="data-table">

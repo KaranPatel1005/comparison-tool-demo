@@ -6,7 +6,7 @@ import ChartsSection from './components/ChartsSection/ChartsSection';
 import CarNavigation from './components/CarNavigation/CarNavigation';
 import SearchBar from './components/SearchBar/SearchBar';
 import ExportControls from './components/ExportControls/ExportControls';
-import Legend from './components/Legend/Legend';
+import Legend, { type LegendFilter } from './components/Legend/Legend';
 import DataTable from './components/DataTable/DataTable';
 import HelpModal from './components/HelpModal/HelpModal';
 import LoadingOverlay from './components/LoadingOverlay/LoadingOverlay';
@@ -21,6 +21,7 @@ function App() {
   const [isHelpOpen, setIsHelpOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const [legendFilter, setLegendFilter] = useState<LegendFilter>('all');
 
   // Data state
   const [fileData, setFileData] = useState<FileData[]>([{}, {}, {}, {}]);
@@ -45,17 +46,9 @@ function App() {
     }
   }, [isDarkMode]);
 
-  // Handle dark mode toggle with pixelate effect
+  // Handle dark mode toggle with smooth transition
   const handleDarkModeToggle = () => {
-    document.body.classList.add('pixelate-transition');
-
-    setTimeout(() => {
-      setIsDarkMode(!isDarkMode);
-    }, 200);
-
-    setTimeout(() => {
-      document.body.classList.remove('pixelate-transition');
-    }, 600);
+    setIsDarkMode(!isDarkMode);
   };
 
   // Handle files processed
@@ -88,6 +81,7 @@ function App() {
     setIsFile4Uploaded(false);
     setCurrentCarIndex(0);
     setSearchValue('');
+    setLegendFilter('all');
     clearAllStorage();
   }, [clearAllStorage]);
 
@@ -342,7 +336,7 @@ function App() {
         onExportAllExcel={handleExportAllExcel}
       />
 
-      <Legend />
+      <Legend activeFilter={legendFilter} onFilterChange={setLegendFilter} />
 
       <DataTable
         carName={currentCarName}
@@ -352,6 +346,7 @@ function App() {
         onFinalValueChange={handleFinalValueChange}
         onCellValueChange={handleCellValueChange}
         searchValue={searchValue}
+        legendFilter={legendFilter}
       />
 
       <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />

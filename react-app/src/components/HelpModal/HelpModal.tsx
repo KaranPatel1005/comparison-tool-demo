@@ -32,6 +32,10 @@ const HelpModal: React.FC<HelpModalProps> = ({ isOpen, onClose }) => {
             <li>
               Use the search box to filter features by text in <em>any column</em>.
             </li>
+            <li>
+              <strong>Click on legend items</strong> to filter the table by color category (All Match, Partial, Different, or Empty).
+              Click <em>Show All</em> to reset the filter.
+            </li>
             <li>Export data to CSV/Excel for the current car or all cars side-by-side.</li>
             <li>
               If you want to start fresh, click <em>Reset Data</em>.

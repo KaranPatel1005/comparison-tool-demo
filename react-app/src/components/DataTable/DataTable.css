@@ -5,6 +5,53 @@
   font-size: 1.2rem;
 }
 
+.filter-status {
+  text-align: center;
+  margin: 5px 0 15px;
+  padding: 8px 15px;
+  background: rgba(0, 122, 255, 0.1);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #007aff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  animation: slideDown 0.3s ease-out;
+}
+
+.filter-badge {
+  background: rgba(0, 122, 255, 0.2);
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(0, 122, 255, 0.3);
+}
+
+.dark-mode .filter-status {
+  background: rgba(0, 122, 255, 0.2);
+  color: #4a9eff;
+}
+
+.dark-mode .filter-badge {
+  background: rgba(0, 122, 255, 0.3);
+  border-color: rgba(0, 122, 255, 0.4);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 #table-scale-container {
   overflow: auto;
   transform-origin: top center;

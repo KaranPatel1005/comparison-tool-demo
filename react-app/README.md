@@ -13,7 +13,7 @@ A modern, strongly-typed React application for comparing data across multiple CS
   - Color-coded comparison results
 - **Data visualization**: Interactive charts using Chart.js
 - **Export capabilities**: Export to CSV or Excel (single car or all cars)
-- **Dark mode**: Beautiful dark theme with pixelate transition effect
+- **Dark mode**: Beautiful dark theme with smooth transition
 - **Responsive design**: Glassmorphism UI with modern aesthetics
 
 ## 🛠️ Tech Stack
@@ -146,9 +146,9 @@ npm run preview
 - **Bar chart**: Percentage differences vs File 1
 
 ### Dark Mode
-- Smooth transition with pixelate effect
+- Smooth transition with 0.3s animation
 - Adjusted color palette for better readability
-- Persistent across page reloads
+- Consistent across all components
 
 ## 🔧 Customization
 
