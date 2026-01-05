@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import type { RowData } from '../../types';
 import type { LegendFilter } from '../Legend/Legend';
 import './DataTable.css';
@@ -24,6 +25,8 @@ const DataTable: React.FC<DataTableProps> = ({
   searchValue,
   legendFilter,
 }) => {
+  const parentRef = useRef<HTMLDivElement>(null);
+
   // Filter rows based on search AND legend filter
   const filteredRows = useMemo(() => {
     let filtered = rows;
@@ -60,6 +63,14 @@ const DataTable: React.FC<DataTableProps> = ({
     return filtered;
   }, [rows, searchValue, legendFilter]);
 
+  // Virtualization setup
+  const rowVirtualizer = useVirtualizer({
+    count: filteredRows.length,
+    getScrollElement: () => parentRef.current,
+    estimateSize: () => 50, // Estimated row height in pixels
+    overscan: 5, // Number of items to render outside of the visible area
+  });
+
   if (!carName) {
     return null;
   }
@@ -83,54 +94,81 @@ const DataTable: React.FC<DataTableProps> = ({
         </div>
       )}
       <div id="table-scale-container">
-        <div className="table-container">
+        <div className="table-container" ref={parentRef}>
           <table id="data-table">
             <thead>
               <tr>
-                <th>Feature</th>
-                <th>{fileNames[0]}</th>
-                <th>{fileNames[1]}</th>
-                <th>{fileNames[2]}</th>
-                {isFile4Uploaded && <th>{fileNames[3]}</th>}
-                <th>Final Data (Editable)</th>
+                <th style={{ backgroundColor: "white", width: "200px", minWidth: "200px" }}>Feature</th>
+                <th style={{ backgroundColor: "white", width: "150px", minWidth: "150px" }}>{fileNames[0]}</th>
+                <th style={{ backgroundColor: "white", width: "150px", minWidth: "150px" }}>{fileNames[1]}</th>
+                <th style={{ backgroundColor: "white", width: "150px", minWidth: "150px" }}>{fileNames[2]}</th>
+                {isFile4Uploaded && <th style={{ backgroundColor: "white", width: "150px", minWidth: "150px" }}>{fileNames[3]}</th>}
+                <th style={{ backgroundColor: "white", width: "200px", minWidth: "200px" }}>Final Data (Editable)</th>
               </tr>
             </thead>
             <tbody>
-              {filteredRows.map((row, rowIndex) => (
-                <tr key={rowIndex} title={row.tooltip || ''}>
-                  <td>{row.feature}</td>
-                  {row.values.map((value, colIndex) => {
-                    if (colIndex === 3 && !isFile4Uploaded) return null;
-
-                    const cellClass = value === '' ? 'blue' : row.colorClass;
-
-                    return (
-                      <td key={colIndex} className={cellClass}>
-                        <input
-                          type="text"
-                          value={value}
-                          onChange={(e) => onCellValueChange(row.feature, colIndex, e.target.value)}
-                        />
-                      </td>
-                    );
-                  })}
-                  <td className="final-cell">
-                    <input
-                      type="text"
-                      value={row.finalValue}
-                      onChange={(e) => onFinalValueChange(row.feature, e.target.value)}
-                      style={{
-                        backgroundColor:
-                          row.colorClass === 'green'
-                            ? '#c8e6c9'
-                            : row.colorClass === 'yellow'
-                            ? '#fff9c4'
-                            : undefined,
-                      }}
-                    />
-                  </td>
+              {/* Spacer for rows before visible area */}
+              {rowVirtualizer.getVirtualItems().length > 0 && (
+                <tr style={{ height: `${rowVirtualizer.getVirtualItems()[0]?.start || 0}px` }}>
+                  <td colSpan={isFile4Uploaded ? 6 : 5} style={{ padding: 0, border: 'none' }} />
                 </tr>
-              ))}
+              )}
+
+              {/* Render only visible rows */}
+              {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+                const row = filteredRows[virtualRow.index];
+
+                return (
+                  <tr
+                    key={virtualRow.index}
+                    title={row.tooltip || ''}
+                    data-index={virtualRow.index}
+                  >
+                    <td>{row.feature}</td>
+                    {row.values.map((value, colIndex) => {
+                      if (colIndex === 3 && !isFile4Uploaded) return null;
+
+                      const cellClass = value === '' ? 'blue' : row.colorClass;
+
+                      return (
+                        <td key={colIndex} className={cellClass}>
+                          <input
+                            type="text"
+                            value={value}
+                            onChange={(e) => onCellValueChange(row.feature, colIndex, e.target.value)}
+                          />
+                        </td>
+                      );
+                    })}
+                    <td className="final-cell">
+                      <input
+                        type="text"
+                        value={row.finalValue}
+                        onChange={(e) => onFinalValueChange(row.feature, e.target.value)}
+                        style={{
+                          backgroundColor:
+                            row.colorClass === 'green'
+                              ? '#c8e6c9'
+                              : row.colorClass === 'yellow'
+                                ? '#fff9c4'
+                                : undefined,
+                        }}
+                      />
+                    </td>
+                  </tr>
+                );
+              })}
+
+              {/* Spacer for rows after visible area */}
+              {rowVirtualizer.getVirtualItems().length > 0 && (
+                <tr style={{
+                  height: `${rowVirtualizer.getTotalSize() -
+                    (rowVirtualizer.getVirtualItems()[rowVirtualizer.getVirtualItems().length - 1]?.end || 0)
+                    }px`
+                }}>
+                  <td colSpan={isFile4Uploaded ? 6 : 5} style={{ padding: 0, border: 'none' }} />
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

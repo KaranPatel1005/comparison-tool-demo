@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, BarElement } from 'chart.js';
 import { Doughnut, Bar } from 'react-chartjs-2';
 import type { ChartData } from '../../types';
@@ -24,6 +24,7 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData = {
   diff4Percent: '0%',
 }, isFile4Uploaded }) => {
 
+
   const doughnutData = {
     labels: ['Same', 'Partial', 'Different'],
     datasets: [
@@ -40,10 +41,10 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData = {
     datasets: [
       {
         label: '% Different vs File1',
-        data: isFile4Uploaded 
+        data: isFile4Uploaded
           ? [chartData?.diff2Percent, chartData?.diff3Percent, chartData?.diff4Percent]
           : [chartData?.diff2Percent, chartData?.diff3Percent],
-        backgroundColor: isFile4Uploaded 
+        backgroundColor: isFile4Uploaded
           ? ['#42A5F5', '#AB47BC', '#EC407A']
           : ['#42A5F5', '#AB47BC'],
       },
@@ -72,12 +73,24 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData = {
     },
   };
 
-  return (
-    <div id="charts-container" className={cn(!chartData && "py-4")}>
+  // Determine if we should show the overlay (no data uploaded yet)
+  const showOverlay = useMemo(() => {
+    return chartData.sameCount === 0 &&
+      chartData.partialCount === 0 &&
+      chartData.diffCount === 0 &&
+      chartData.diff2Percent === 0 &&
+      chartData.diff3Percent === 0 &&
+      chartData.diff4Percent === 0;
+  }, [chartData]);
 
-      {!chartData && <div className="chart-overlay">
-           <p>Please upload and compare files to see charts.</p>
-         </div>}
+  console.log("show", showOverlay)
+  console.log("chartData", chartData)
+  return (
+    <div id="charts-container" className={cn(showOverlay && "py-4")}>
+
+      {showOverlay && <div className="chart-overlay">
+        <p>Please upload and compare files to see charts.</p>
+      </div>}
 
       <div className="chart-wrapper">
         <Doughnut data={doughnutData} options={doughnutOptions} />

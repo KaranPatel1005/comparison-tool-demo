@@ -30,6 +30,7 @@ function App() {
   const [fileNames, setFileNames] = useState<string[]>(['Data 1', 'Data 2', 'Data 3', 'Data 4']);
   const [isFile4Uploaded, setIsFile4Uploaded] = useState(false);
   const [currentCarIndex, setCurrentCarIndex] = useState(0);
+  const [finalValueTrigger, setFinalValueTrigger] = useState(0); // Trigger re-render on final value change
 
   // Custom hooks
   const { saveFinalValue, getFinalValue, saveCellValue, clearAllStorage } = useLocalStorage();
@@ -123,7 +124,7 @@ function App() {
     });
 
     return rows;
-  }, [currentCarName, carFeaturesOrder, fileData, isFile4Uploaded, getFinalValue]);
+  }, [currentCarName, carFeaturesOrder, fileData, isFile4Uploaded, getFinalValue, finalValueTrigger]);
 
   // Calculate KPI metrics
   const kpiMetrics = useMemo((): KPIMetrics => {
@@ -196,8 +197,17 @@ function App() {
   }, [currentCarName, currentCarRows, isFile4Uploaded]);
 
   // Calculate chart data
-  const chartData = useMemo((): ChartData | null => {
-    if (!currentCarName || currentCarRows.length === 0) return null;
+  const chartData = useMemo((): ChartData => {
+    if (!currentCarName || currentCarRows.length === 0) {
+      return {
+        sameCount: 0,
+        partialCount: 0,
+        diffCount: 0,
+        diff2Percent: 0,
+        diff3Percent: 0,
+        diff4Percent: 0,
+      };
+    }
 
     return {
       sameCount: kpiMetrics.sameCount,
@@ -213,8 +223,8 @@ function App() {
   const handleFinalValueChange = useCallback(
     (feature: string, value: string) => {
       saveFinalValue(currentCarName, feature, value);
-      // Force re-render by updating a dummy state or use a ref
-      // For simplicity, we'll rely on the next render cycle
+      // Trigger re-render to update the displayed value
+      setFinalValueTrigger(prev => prev + 1);
     },
     [currentCarName, saveFinalValue]
   );
