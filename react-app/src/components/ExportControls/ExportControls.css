@@ -2,9 +2,11 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   gap: 10px;
+  margin-bottom: 0;
 }
 
 .export-btn {
+  height: 48px;
   background: linear-gradient(135deg, #7c4dff 0%, #651fff 100%);
   padding: 12px 18px;
   color: white;

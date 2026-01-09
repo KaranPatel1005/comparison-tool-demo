@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import type { FileData, CarFeaturesOrder } from '../../types';
+import React, { useState, useRef } from "react";
+import type { FileData, CarFeaturesOrder } from "../../types";
 import {
   isCSV,
   isExcel,
@@ -7,23 +7,31 @@ import {
   readFileAsArrayBuffer,
   parseMultiColumnCSV,
   parseExcel,
-} from '../../utils/fileParser';
-import './FileUpload.css';
+} from "../../utils/fileParser";
+import "./FileUpload.css";
 
 interface FileUploadProps {
   onFilesProcessed: (
     fileData: FileData[],
     carFeaturesOrder: CarFeaturesOrder,
-    allCars: string[],
+    allCars: { _id: string; carName: string }[],
     fileNames: string[],
     isFile4Uploaded: boolean
   ) => void;
   onReset: () => void;
 }
 
-const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, onReset }) => {
-  const [fileNames, setFileNames] = useState<string[]>(['Data 1', 'Data 2', 'Data 3', 'Data 4']);
-  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null]);
+const FileUpload: React.FC<FileUploadProps> = ({
+  onFilesProcessed,
+  onReset,
+}) => {
+  const [fileNames, setFileNames] = useState<string[]>([]);
+  const fileInputRefs = useRef<(HTMLInputElement | null)[]>([
+    null,
+    null,
+    null,
+    null,
+  ]);
 
   const handleFileChange = (index: number) => {
     const fileInput = fileInputRefs.current[index];
@@ -41,7 +49,9 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, onReset }) =>
     const files = fileInputRefs.current.map((ref) => ref?.files?.[0] || null);
 
     if (!files[0] || !files[1] || !files[2]) {
-      alert('Please upload at least three CSV or Excel files (File1, File2, File3).');
+      alert(
+        "Please upload at least three CSV or Excel files (File1, File2, File3)."
+      );
       return;
     }
 
@@ -64,31 +74,43 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, onReset }) =>
           const arrayBuffer = await readFileAsArrayBuffer(file);
           parseExcel(arrayBuffer, i, fileData, carFeaturesOrder);
         } else {
-          alert(`Unsupported file format: ${file.name}. Please upload CSV or Excel files.`);
+          alert(
+            `Unsupported file format: ${file.name}. Please upload CSV or Excel files.`
+          );
           return;
         }
       }
 
-      // Get all cars from file1
-      const allCars = Object.keys(carFeaturesOrder);
+      const allCars = Object.keys(carFeaturesOrder).map((key) => ({
+        _id: String(key),
+        carName: key,
+      }));
 
       // Notify parent component
-      onFilesProcessed(fileData, carFeaturesOrder, allCars, fileNames, isFile4Uploaded);
+      onFilesProcessed(
+        fileData,
+        carFeaturesOrder,
+        allCars,
+        fileNames,
+        isFile4Uploaded
+      );
     } catch (error) {
-      console.error('Error processing files:', error);
-      alert('Error processing files. Please check the file format and try again.');
+      console.error("Error processing files:", error);
+      alert(
+        "Error processing files. Please check the file format and try again."
+      );
     }
   };
 
   const handleReset = () => {
     // Clear file inputs
     fileInputRefs.current.forEach((ref) => {
-      if (ref) ref.value = '';
+      if (ref) ref.value = "";
     });
-    
+
     // Reset file names
-    setFileNames(['Data 1', 'Data 2', 'Data 3', 'Data 4']);
-    
+    setFileNames([]);
+
     // Call parent reset
     onReset();
   };
@@ -101,19 +123,22 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesProcessed, onReset }) =>
             <input
               type="file"
               accept=".csv,.xls,.xlsx"
-              ref={(el) => (fileInputRefs.current[index] = el)}
+              ref={(el) => {
+                fileInputRefs.current[index] = el;
+              }}
               onChange={() => handleFileChange(index)}
             />
             <span>
-              File {index + 1} {index === 3 ? '(Optional)' : index === 0 ? '(Original)' : ''}
+              File {index + 1}{" "}
+              {index === 3 ? "(Optional)" : index === 0 ? "(Original)" : ""}
             </span>
           </label>
         ))}
       </div>
 
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+      <div style={{ textAlign: "center", marginBottom: "20px" }}>
         <button onClick={handleProcessFiles}>Upload & Compare</button>
-        <button onClick={handleReset} style={{ marginLeft: '10px' }}>
+        <button onClick={handleReset} style={{ marginLeft: "10px" }}>
           Reset Data
         </button>
       </div>

@@ -83,8 +83,6 @@ const ChartsSection: React.FC<ChartsSectionProps> = ({ chartData = {
       chartData.diff4Percent === 0;
   }, [chartData]);
 
-  console.log("show", showOverlay)
-  console.log("chartData", chartData)
   return (
     <div id="charts-container" className={cn(showOverlay && "py-4")}>
 

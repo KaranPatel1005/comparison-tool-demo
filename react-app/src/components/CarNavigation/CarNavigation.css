@@ -1,13 +1,12 @@
 .car-navigation {
-  text-align: center;
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-end;
   gap: 15px;
 }
 
-.car-navigation select {
+/* .car-navigation select {
   padding: 10px 15px;
   border-radius: 8px;
   border: 2px solid #ccc;
@@ -20,7 +19,7 @@
 .car-navigation select:focus {
   border-color: #007aff;
   outline: none;
-}
+} */
 
 .dark-mode .car-navigation select {
   background: rgba(255, 255, 255, 0.15);

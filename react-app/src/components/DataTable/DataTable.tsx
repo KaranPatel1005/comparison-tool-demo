@@ -36,7 +36,7 @@ const DataTable: React.FC<DataTableProps> = ({
       filtered = filtered.filter((row) => {
         // For blue filter, check if any value is empty
         if (legendFilter === 'blue') {
-          return row.values.some((val) => val === '');
+          return row.values.every((val) => val === '');
         }
         // For other filters, match the color class
         return row.colorClass === legendFilter;
